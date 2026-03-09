@@ -1,0 +1,215 @@
+/* ERP Postventa - Personalización de Colores */
+
+/* Fondos y gradientes vibrantes */
+:root {
+    --primary-rgb: 139, 92, 246;
+    --secondary-rgb: 99, 102, 241;
+    --success-rgb: 16, 185, 129;
+    --warning-rgb: 245, 158, 11;
+    --danger-rgb: 244, 63, 94;
+    --info-rgb: 6, 182, 212;
+}
+
+body {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+/* Panel lateral con gradiente */
+.fi-sidebar {
+    background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%) !important;
+}
+
+.fi-sidebar-nav-groups {
+    background: transparent !important;
+}
+
+/* Widgets con tarjetas coloridas */
+.fi-widget {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease !important;
+}
+
+.fi-widget:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Estadísticas con colores de borde */
+.fi-stat-card {
+    border-left: 4px solid #8b5cf6 !important;
+    border-radius: 12px !important;
+}
+
+/* Títulos de estadísticas */
+.fi-stat-value {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+/* Botones primarios vibrantes */
+.fi-btn-primary {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-btn-primary:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.4) !important;
+}
+
+/* Badges de estado coloridos */
+.fi-badge-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-weight: 600 !important;
+}
+
+.fi-badge-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-weight: 600 !important;
+}
+
+.fi-badge-danger {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-weight: 600 !important;
+}
+
+.fi-badge-info {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    padding: 4px 12px !important;
+    font-weight: 600 !important;
+}
+
+/* Tablas con rayas suaves */
+.fi-table-row:nth-child(even) {
+    background-color: #f9fafb !important;
+}
+
+.fi-table-row:hover {
+    background-color: #f3f4f6 !important;
+}
+
+/* Encabezados de tabla */
+.fi-table-header-cell {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Formularios más atractivos */
+.fi-field {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.fi-input {
+    border-radius: 8px !important;
+    border: 2px solid #e5e7eb !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-input:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Página de Dashboard */
+.fi-page {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
+}
+
+/* Tarjetas del dashboard */
+.fi-dashboard-widgets {
+    gap: 24px !important;
+}
+
+/* Animación suave al cargar */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fi-widget {
+    animation: fadeInUp 0.5s ease-out !important;
+}
+
+/* Colores específicos por tipo de contenido */
+.habilitations-card {
+    border-left-color: #8b5cf6 !important;
+}
+
+.budgets-card {
+    border-left-color: #06b6d4 !important;
+}
+
+.deliveries-card {
+    border-left-color: #f59e0b !important;
+}
+
+.billing-card {
+    border-left-color: #10b981 !important;
+}
+
+.parts-card {
+    border-left-color: #6366f1 !important;
+}
+
+.claims-card {
+    border-left-color: #f43f5e !important;
+}
+
+.conservations-card {
+    border-left-color: #14b8a6 !important;
+}
+
+/* Navegación con íconos */
+.fi-nav-item {
+    border-radius: 8px !important;
+    margin: 4px 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fi-nav-item-active {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Logo y marca */
+.fi-brand-title {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}

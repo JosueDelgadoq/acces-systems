@@ -9,6 +9,7 @@ use App\Filament\Resources\TechnicalBudgets\Schemas\TechnicalBudgetForm;
 use App\Filament\Resources\TechnicalBudgets\Tables\TechnicalBudgetsTable;
 use App\Models\TechnicalBudget;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -29,6 +30,8 @@ class TechnicalBudgetResource extends Resource
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE C - Control';
 
     public static function form(Schema $schema): Schema
     {

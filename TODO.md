@@ -1,120 +1,146 @@
 # Plan de Implementación - ERP Postventa
 
-## Proceso 1: HABILITACIONES (Prioridad ALTA)
-### Tabla: `habilitations`
+## ✅ PROCESOS IMPLEMENTADOS
+
+### 1. HABILITACIONES (Prioridad ALTA) - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_000001_create_habilitations_table.php`
+- Modelo: `app/Models/Habilitation.php`
+- Recurso Filament: `app/Filament/Resources/Habilitations/`
+- Estados: pendiente, documentacion, enviado_gestor, en_tramite, aprobado, rechazado, archivado
+
+### 2. PRESUPUESTOS DE VISITAS TÉCNICAS - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_000002_create_technical_budgets_table.php`
+- Modelo: `app/Models/TechnicalBudget.php`
+- Recurso Filament: `app/Filament/Resources/TechnicalBudgets/`
+- Estados: nuevo, cotizado, enviado, aprobado, rechazado, visita_coordinada, cerrado
+
+### 3. LOGÍSTICA DE EQUIPOS - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_000003_create_equipment_deliveries_table.php`
+- Modelo: `app/Models/EquipmentDelivery.php`
+- Recurso Filament: `app/Filament/Resources/EquipmentDeliveries/`
+- Estados: pendiente_confirmacion, confirmado, flete_solicitado, en_camino, entregado, instalado
+
+### 4. FACTURACIÓN - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_000004_create_billing_controls_table.php`
+- Modelo: `app/Models/BillingControl.php`
+- Recurso Filament: `app/Filament/Resources/BillingControls/`
+
+### 5. COMPRA DE REPUESTOS - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_000005_create_parts_orders_table.php`
+- Modelo: `app/Models/PartsOrder.php`
+- Recurso Filament: `app/Filament/Resources/PartsOrders/`
+
+### 6. GESTIÓN DE USUARIOS CON ROLES - ✅ COMPLETADO
+- Migración: `database/migrations/2026_03_10_100000_add_role_to_users_table.php`
+- Modelo actualizado: `app/Models/User.php` (agregado campo role)
+- Recurso Filament: `app/Filament/Resources/Users/`
+- Roles: admin, manager, technician, commercial, client
+
+---
+
+## 📋 ESTRUCTURA DE NAVEGACIÓN IMPLEMENTADA
+
+```
+BLOQUE A - ADMIN
+└── Usuarios
+
+BLOQUE B - OPERACIONES
+├── Habilitaciones
+├── Entregas de Equipos
+└── Repuestos
+
+BLOQUE C - CONTROL
+├── Presupuestos
+└── Facturación
+
+GESTIÓN
+├── Clientes
+├── Conservaciones
+├── Reclamos
+└── Tickets
+```
+
+---
+
+## 🔧 PASOS PARA ACTIVAR
+
+1. Ejecutar migraciones:
+```bash
+php artisan migrate
+```
+
+2. Crear usuario admin:
+```bash
+php artisan make:filament-user
+```
+
+3. Ejecutar el servidor:
+```bash
+php artisan serve
+```
+
+---
+
+## 📊 MODELO DE DATOS IMPLEMENTADO
+
+### Habilitations
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | bigint | Primary Key |
 | client_id | foreignId | Cliente |
-| equipment | string | Equipo a habilitar |
-| status | enum | pendiente, documentacion, enviado_gestor, en_tramite, aprobado, rechazado, archivado |
+| equipment | string | Equipo |
+| status | enum | Estado del trámite |
 | doc_completa | boolean | Documentación completa |
-| fecha_envio_gestor | date | Fecha envío al gestor |
+| fecha_envio_gestor | date | Fecha envío gestor |
 | fecha_presentacion | date | Fecha presentación |
 | proxima_gestion | date | Próxima gestión |
 | observaciones | text | Observaciones |
-| created_at, updated_at | timestamps | |
 
-### Recursos Filament:
-- `app/Filament/Resources/Habilitations/HabilitationResource.php`
-- `app/Filament/Resources/Habilitations/Schemas/HabilitationForm.php`
-- `app/Filament/Resources/Habilitations/Tables/HabilitationsTable.php`
-- `app/Filament/Resources/Habilitations/Pages/ListHabilitations.php`
-- `app/Filament/Resources/Habilitations/Pages/CreateHabilitation.php`
-- `app/Filament/Resources/Habilitations/Pages/EditHabilitation.php`
-
----
-
-## Proceso 2: PRESUPUESTOS DE VISITAS TÉCNICAS (Prioridad ALTA)
-### Tabla: `technical_budgets`
+### TechnicalBudgets
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | bigint | Primary Key |
 | client_id | foreignId | Cliente |
-| title | string | Título del presupuesto |
-| description | text | Descripción del servicio |
-| status | enum | nuevo, cotizado, enviado, aprobado, rechazado, visita_coordinada, cerrado |
-| amount | decimal | Monto presupuestado |
-| sent_at | datetime | Fecha de envío |
-| approval_date | date | Fecha de aprobación |
-| scheduled_visit | date | Fecha de visita programada |
-| service_remito | string | Número de remito de servicio |
-| created_at, updated_at | timestamps | |
+| title | string | Título |
+| description | text | Descripción |
+| status | enum | Estado |
+| amount | decimal | Monto |
+| sent_at | datetime | Fecha envío |
+| approval_date | date | Fecha aprobación |
+| scheduled_visit | date | Fecha visita |
+| service_remito | string | Remito servicio |
 
-### Recursos Filament:
-- `app/Filament/Resources/TechnicalBudgets/TechnicalBudgetResource.php`
-- Similar estructura a Claims
-
----
-
-## Proceso 3: LOGÍSTICA DE EQUIPOS (Prioridad MEDIA)
-### Tabla: `equipment_deliveries`
+### EquipmentDeliveries
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | bigint | Primary Key |
 | client_id | foreignId | Cliente |
 | equipment | string | Equipo |
-| sale_date | date | Fecha de venta |
-| delivery_date | date | Fecha de entrega |
-| installation_date | date | Fecha de instalación |
-| delivery_remito | string | Remito de entrega |
-| installation_remito | string | Remito de instalación |
+| sale_date | date | Fecha venta |
+| delivery_date | date | Fecha entrega |
+| installation_date | date | Fecha instalación |
+| delivery_remito | string | Remito entrega |
+| installation_remito | string | Remito instalación |
 | signed_remito | boolean | Remito firmado |
-| status | enum | pendiente_confirmacion, confirmado, flete_solicitado, en_camino, entregado, instalado |
-| observations | text | Observaciones |
-| created_at, updated_at | timestamps | |
+| status | enum | Estado |
 
----
-
-## Proceso 4: FACTURACIÓN (Prioridad MEDIA)
-### Tabla: `billing_controls`
+### BillingControls
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | bigint | Primary Key |
 | client_id | foreignId | Cliente |
-| service_description | string | Descripción del servicio |
+| service_description | string | Servicio |
 | amount | decimal | Monto |
-| invoice_number | string | Número de factura |
-| invoice_date | date | Fecha de factura |
-| invoiced | boolean | ¿Se facturó? |
-| paid | boolean | ¿Se cobró? |
-| payment_date | date | Fecha de cobro |
-| observations | text | Observaciones |
-| created_at, updated_at | timestamps | |
+| invoice_number | string | Nº Factura |
+| invoice_date | date | Fecha factura |
+| invoiced | boolean | ¿Facturado? |
+| paid | boolean | ¿Cobrado? |
+| payment_date | date | Fecha cobro |
 
----
-
-## Proceso 5: COMPRA DE REPUESTOS (Prioridad BAJA)
-### Tabla: `parts_orders`
+### PartsOrders
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | bigint | Primary Key |
-| technician_id | foreignId | Técnico que solicita |
-| part_name | string | Nombre del repuesto |
+| technician_id | foreignId | Técnico |
+| part_name | string | Repuesto |
 | supplier | string | Proveedor |
 | estimated_cost | decimal | Costo estimado |
-| status | enum | pendiente_cotizacion, cotizado, aprobado, comprado, recibido, entregado_tecnico |
-| purchase_date | date | Fecha de compra |
-| arrival_date | date | Fecha de llegada estimada |
-| invoice | string | Factura del proveedor |
-| observations | text | Observaciones |
-| created_at, updated_at | timestamps | |
-
----
-
-## Orden de implementación sugerido:
-1. ✅ HABILITACIONES - "Nada sale si no está en esta planilla" - ✅ COMPLETADO
-2. ✅ PRESUPUESTOS - Segunda prioridad (genera ingresos) - ✅ COMPLETADO
-3. ✅ LOGÍSTICA - Tercera prioridad (entregas) - ✅ COMPLETADO
-4. ✅ FACTURACIÓN - Control pero no genera - ✅ COMPLETADO
-5. ✅ REPUESTOS - Ultimo (apoyo a operaciones) - ✅ COMPLETADO
-
----
-
-## Recursos creados:
-- **Habilitations** → app/Filament/Resources/Habilitations/
-- **TechnicalBudgets** → app/Filament/Resources/TechnicalBudgets/
-- **EquipmentDeliveries** → app/Filament/Resources/EquipmentDeliveries/
-- **BillingControls** → app/Filament/Resources/BillingControls/
-- **PartsOrders** → app/Filament/Resources/PartsOrders/
-
+| status | enum | Estado |
+| purchase_date | date | Fecha compra |
+| arrival_date | date | Fecha llegada |
+| invoice | string | Factura |

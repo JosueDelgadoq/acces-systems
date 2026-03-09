@@ -9,6 +9,7 @@ use App\Filament\Resources\Habilitations\Schemas\HabilitationForm;
 use App\Filament\Resources\Habilitations\Tables\HabilitationsTable;
 use App\Models\Habilitation;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -29,6 +30,8 @@ class HabilitationResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'equipment';
+
+    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE B - Operaciones';
 
     public static function form(Schema $schema): Schema
     {

@@ -9,6 +9,7 @@ use App\Filament\Resources\BillingControls\Schemas\BillingControlForm;
 use App\Filament\Resources\BillingControls\Tables\BillingControlsTable;
 use App\Models\BillingControl;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -29,6 +30,8 @@ class BillingControlResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'service_description';
+
+    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE C - Control';
 
     public static function form(Schema $schema): Schema
     {

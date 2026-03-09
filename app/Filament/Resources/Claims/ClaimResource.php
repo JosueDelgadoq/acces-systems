@@ -9,6 +9,7 @@ use App\Filament\Resources\Claims\Schemas\ClaimForm;
 use App\Filament\Resources\Claims\Tables\ClaimsTable;
 use App\Models\Claim;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,6 +22,8 @@ class ClaimResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'tittle';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
 
     public static function form(Schema $schema): Schema
     {

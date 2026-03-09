@@ -9,6 +9,7 @@ use App\Filament\Resources\EquipmentDeliveries\Schemas\EquipmentDeliveryForm;
 use App\Filament\Resources\EquipmentDeliveries\Tables\EquipmentDeliveriesTable;
 use App\Models\EquipmentDelivery;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -29,6 +30,8 @@ class EquipmentDeliveryResource extends Resource
     protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'equipment';
+
+    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE B - Operaciones';
 
     public static function form(Schema $schema): Schema
     {
