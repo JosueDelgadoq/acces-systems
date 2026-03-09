@@ -7,7 +7,7 @@ use App\Filament\Resources\Clientes\Pages\EditCliente;
 use App\Filament\Resources\Clientes\Pages\ListClientes;
 use App\Filament\Resources\Clientes\Schemas\ClienteForm;
 use App\Filament\Resources\Clientes\Tables\ClientesTable;
-use App\Models\Cliente;
+use App\Models\Client;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,13 +16,16 @@ use Filament\Tables\Table;
 
 class ClienteResource extends Resource
 {
-    protected static ?string $model = Cliente::class;
-
+protected static ?string $model = Client::class;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'nombre';
+    protected static ?string $navigationLabel = 'Clientes';
+    protected static ?string $modelLabel = 'Cliente';
+    protected static ?string $pluralModelLabel = 'Clientes';
 
     public static function form(Schema $schema): Schema
+    
     {
         return ClienteForm::configure($schema);
     }
