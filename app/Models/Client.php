@@ -25,4 +25,20 @@ public function conservations()
 {
     return $this->hasMany(Conservation::class);
 }
+public function habilitations()
+{
+    return $this->hasMany(Habilitation::class);
+}
+public function technicalBudgets()
+{
+    return $this->hasMany(TechnicalBudget::class);
+}
+public function equipmentDeliveries()
+{
+    return $this->hasMany(EquipmentDelivery::class);
+}
+public function billingControls()
+{
+    return $this->hasMany(BillingControl::class);
+}
 }

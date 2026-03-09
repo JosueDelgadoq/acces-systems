@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
                 \App\Filament\Widgets\ClaimsStats::class,
+                \App\Filament\Widgets\ConservationsStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -57,4 +58,5 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
+    
 }
