@@ -33,6 +33,7 @@ class ClientResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return ClientForm::configure($schema);
+        
     }
 
     public static function table(Table $table): Table
