@@ -13,4 +13,16 @@ class Client extends Model
         'phone',
         'notes',
     ];
+    public function tickets()
+{
+    return $this->hasMany(Ticket::class);
+}
+public function claims()
+{
+    return $this->hasMany(Claim::class);
+}
+public function conservations()
+{
+    return $this->hasMany(Conservation::class);
+}
 }
