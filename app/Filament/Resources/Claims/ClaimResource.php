@@ -19,9 +19,16 @@ class ClaimResource extends Resource
 {
     protected static ?string $model = Claim::class;
 
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'tittle';
+    protected static ?string $navigationLabel = 'Reclamos';
+
+    protected static ?string $modelLabel = 'Reclamo';
+
+    protected static ?string $pluralModelLabel = 'Reclamos';
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestión';
 

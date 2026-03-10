@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Reports;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Resources\Clients\ClientResource;
 use App\Filament\Resources\Claims\ClaimResource;
@@ -14,6 +15,9 @@ use App\Filament\Resources\PartsOrders\PartsOrderResource;
 use App\Filament\Widgets\BloqueAStats;
 use App\Filament\Widgets\BloqueBStats;
 use App\Filament\Widgets\BloqueCStats;
+use App\Filament\Widgets\Charts\ConservationsChart;
+use App\Filament\Widgets\Charts\ClaimsChart;
+use App\Filament\Widgets\Charts\BillingChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -62,7 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 UserResource::class,
                 ClientResource::class,
-ClaimResource::class,
+                ClaimResource::class,
                 ConservationResource::class,
                 HabilitationResource::class,
                 TechnicalBudgetResource::class,
@@ -73,14 +77,18 @@ ClaimResource::class,
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                Reports::class,
             ])
             ->widgets([
                 AccountWidget::class,
-                \App\Filament\Widgets\BloqueAStats::class,
-                \App\Filament\Widgets\BloqueBStats::class,
-                \App\Filament\Widgets\BloqueCStats::class,
+                BloqueAStats::class,
+                BloqueBStats::class,
+                BloqueCStats::class,
                 \App\Filament\Widgets\ClaimsStats::class,
                 \App\Filament\Widgets\ConservationsStats::class,
+                ConservationsChart::class,
+                ClaimsChart::class,
+                BillingChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

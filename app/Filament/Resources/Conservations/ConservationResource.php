@@ -19,7 +19,14 @@ class ConservationResource extends Resource
 {
     protected static ?string $model = Conservation::class;
 
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'Conservaciones';
+
+    protected static ?string $modelLabel = 'Conservación';
+
+    protected static ?string $pluralModelLabel = 'Conservaciones';
 
     protected static ?string $recordTitleAttribute = 'client.name';
     

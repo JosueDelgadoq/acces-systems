@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Conservation extends Model
 {
-    protected $fillable = [
+protected $fillable = [
         'client_id',
         'start_date',
         'next_service_date',
@@ -16,6 +16,9 @@ class Conservation extends Model
         'notes',
         'current_service_number',
         'total_services',
+        'last_service_date',
+        'completed_this_month',
+        'completed_at',
     ];
 
     protected static function booted()
