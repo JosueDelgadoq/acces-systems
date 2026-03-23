@@ -14,20 +14,26 @@ class TicketsTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
+TextColumn::make('client_id')
+                    ->label('Cliente')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('title')
+                    ->label('Título')
                     ->searchable(),
                 TextColumn::make('status')
+                    ->label('Estado')
                     ->searchable(),
                 TextColumn::make('priority')
+                    ->label('Prioridad')
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

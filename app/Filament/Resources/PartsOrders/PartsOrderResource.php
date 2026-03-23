@@ -9,6 +9,7 @@ use App\Filament\Resources\PartsOrders\Schemas\PartsOrderForm;
 use App\Filament\Resources\PartsOrders\Tables\PartsOrdersTable;
 use App\Models\PartsOrder;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -29,6 +30,8 @@ class PartsOrderResource extends Resource
     protected static ?int $navigationSort = 6;
 
     protected static ?string $recordTitleAttribute = 'part_name';
+
+    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE B - Operaciones';
 
     public static function form(Schema $schema): Schema
     {

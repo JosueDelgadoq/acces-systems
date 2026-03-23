@@ -9,6 +9,7 @@ use App\Filament\Resources\Tickets\Schemas\TicketForm;
 use App\Filament\Resources\Tickets\Tables\TicketsTable;
 use App\Models\Ticket;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,9 +19,18 @@ class TicketResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'tittle';
+    protected static ?string $navigationLabel = 'Tickets';
+
+    protected static ?string $modelLabel = 'Ticket';
+
+    protected static ?string $pluralModelLabel = 'Tickets';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
 
     public static function form(Schema $schema): Schema
     {

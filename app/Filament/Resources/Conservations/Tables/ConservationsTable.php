@@ -21,6 +21,15 @@ class ConservationsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('service_progress')
+                    ->label('Servicio')
+                    ->badge()
+                    ->color(fn ($record) =>
+                        $record->remaining_services <= 2
+                            ? 'warning'
+                            : 'success'
+                    ),
+
                 TextColumn::make('start_date')
                     ->label('Inicio contrato')
                     ->date()
@@ -80,3 +89,4 @@ class ConservationsTable
             ]);
     }
 }
+

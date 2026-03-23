@@ -7,10 +7,11 @@ use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ListClients;
 use App\Filament\Resources\Clients\Schemas\ClientForm;
 use App\Filament\Resources\Clients\Tables\ClientsTable;
-use App\Filament\Resources\Clients\ClientResource\RelationManagers\ClaimsRelationManager;
+use App\Filament\Resources\Clients\RelationManagers\ClaimsRelationManager;
 use Filament\Support\Icons\Heroicon;
 use App\Models\Client;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -30,9 +31,12 @@ class ClientResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
+
     public static function form(Schema $schema): Schema
     {
         return ClientForm::configure($schema);
+        
     }
 
     public static function table(Table $table): Table

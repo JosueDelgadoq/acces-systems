@@ -14,27 +14,35 @@ class ClaimsTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
+TextColumn::make('client_id')
+                    ->label('Cliente')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('title')
+                    ->label('Título')
                     ->searchable(),
                 TextColumn::make('status')
+                    ->label('Estado')
                     ->searchable(),
                 TextColumn::make('technician_id')
+                    ->label('Técnico')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('scheduled_visit')
+                    ->label('Visita programada')
                     ->date()
                     ->sortable(),
                 TextColumn::make('closed_at')
+                    ->label('Cerrado')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

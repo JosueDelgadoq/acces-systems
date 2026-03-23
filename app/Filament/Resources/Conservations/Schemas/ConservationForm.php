@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Grid;
 use Filament\Schemas\Schema;
 
 class ConservationForm
@@ -15,10 +16,24 @@ class ConservationForm
         return $schema
             ->components([
 
-                TextInput::make('client_id')
-                    ->label('Cliente ID')
+                Select::make('client_id')
+                    ->label('Cliente')
+                    ->relationship('client', 'name')
                     ->required()
-                    ->numeric(),
+                    ->searchable()
+                    ->columnSpanFull(),
+
+                TextInput::make('current_service_number')
+                    ->label('Número de servicio actual')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(1),
+
+                TextInput::make('total_services')
+                    ->label('Total de servicios')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(12),
 
                 DatePicker::make('start_date')
                     ->label('Inicio del contrato')
@@ -49,3 +64,4 @@ class ConservationForm
             ]);
     }
 }
+

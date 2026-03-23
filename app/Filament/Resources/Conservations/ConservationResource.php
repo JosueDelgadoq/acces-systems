@@ -9,6 +9,7 @@ use App\Filament\Resources\Conservations\Schemas\ConservationForm;
 use App\Filament\Resources\Conservations\Tables\ConservationsTable;
 use App\Models\Conservation;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,9 +19,19 @@ class ConservationResource extends Resource
 {
     protected static ?string $model = Conservation::class;
 
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Conservaciones';
+
+    protected static ?string $modelLabel = 'Conservación';
+
+    protected static ?string $pluralModelLabel = 'Conservaciones';
+
     protected static ?string $recordTitleAttribute = 'client.name';
+    
+    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
+    
     public static function form(Schema $schema): Schema
     {
         return ConservationForm::form($schema);

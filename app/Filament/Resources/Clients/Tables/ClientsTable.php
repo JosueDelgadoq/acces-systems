@@ -14,20 +14,29 @@ class ClientsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 TextColumn::make('company')
+                    ->label('Empresa')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->searchable(),
                 TextColumn::make('phone')
+                    ->label('Teléfono')
+                    ->searchable(),
+                TextColumn::make('id_crm')
+                    ->label('ID CRM')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
