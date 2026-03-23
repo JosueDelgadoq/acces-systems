@@ -30,13 +30,7 @@ class UserForm
                 Select::make('role')
                     ->required()
                     ->label('Rol')
-                    ->options([
-                        'admin' => 'Administrador',
-                        'manager' => 'Gerente',
-                        'technician' => 'Técnico',
-                        'commercial' => 'Comercial',
-                        'client' => 'Cliente',
-                    ])
+                    ->options(\App\Models\User::ROLES)
                     ->default('client'),
             ]);
     }

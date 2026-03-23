@@ -30,6 +30,11 @@ class ClientForm
                     ->tel()
                     ->default(null),
 
+                TextInput::make('id_crm')
+                    ->label('ID CRM')
+                    ->numeric()
+                    ->default(null),
+
                 // Address fields
                 TextInput::make('address')
                     ->label('Dirección')

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Clients\Tables;
+namespace App\Filament\Resources\Ventas\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,35 +8,32 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ClientsTable
+class VentasTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-TextColumn::make('name')
-                    ->label('Nombre')
+                TextColumn::make('cliente_nombre')
                     ->searchable(),
-                TextColumn::make('company')
-                    ->label('Empresa')
+                TextColumn::make('producto')
                     ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email')
+                TextColumn::make('monto')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('estado')
                     ->searchable(),
-                TextColumn::make('phone')
-                    ->label('Teléfono')
-                    ->searchable(),
-                TextColumn::make('id_crm')
-                    ->label('ID CRM')
-                    ->sortable()
-                    ->searchable(),
+                TextColumn::make('fecha')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('created_by')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

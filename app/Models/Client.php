@@ -11,6 +11,7 @@ class Client extends Model
         'company',
         'email',
         'phone',
+        'id_crm',
         'notes',
         'address',
         'city',
@@ -29,6 +30,10 @@ class Client extends Model
         return $this->hasMany(Claim::class);
     }
 
+    public function pendientes()
+{
+    return $this->hasMany(Pendiente::class);
+}
     public function conservations()
     {
         return $this->hasMany(Conservation::class);
@@ -49,6 +54,8 @@ class Client extends Model
         return $this->hasMany(EquipmentDelivery::class);
     }
 
+    
+
     public function billingControls()
     {
         return $this->hasMany(BillingControl::class);
@@ -68,4 +75,5 @@ class Client extends Model
 
         return implode(', ', $parts) ?: 'Sin dirección';
     }
+    
 }

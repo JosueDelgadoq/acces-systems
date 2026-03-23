@@ -98,6 +98,22 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Check if user is supervisor
+     */
+    public function isSupervisor(): bool
+    {
+        return $this->role === 'supervisor';
+    }
+
+    /**
+     * Check if user is tecnico
+     */
+    public function isTecnico(): bool
+    {
+        return $this->role === 'tecnico';
+    }
+
+    /**
      * Get the role label in Spanish
      */
     public function getRoleLabelAttribute(): string
@@ -106,6 +122,8 @@ class User extends Authenticatable implements FilamentUser
             'admin' => 'Administrador',
             'manager' => 'Gerente',
             'technician' => 'Técnico',
+            'tecnico' => 'Técnico',
+            'supervisor' => 'Supervisor',
             'commercial' => 'Comercial',
             'client' => 'Cliente',
             default => 'Sin rol',
@@ -118,6 +136,8 @@ class User extends Authenticatable implements FilamentUser
     public const ROLE_ADMIN = 'admin';
     public const ROLE_MANAGER = 'manager';
     public const ROLE_TECHNICIAN = 'technician';
+    public const ROLE_TECNICO = 'tecnico';
+    public const ROLE_SUPERVISOR = 'supervisor';
     public const ROLE_COMMERCIAL = 'commercial';
     public const ROLE_CLIENT = 'client';
 
@@ -125,6 +145,8 @@ class User extends Authenticatable implements FilamentUser
         self::ROLE_ADMIN => 'Administrador',
         self::ROLE_MANAGER => 'Gerente',
         self::ROLE_TECHNICIAN => 'Técnico',
+        self::ROLE_TECNICO => 'Técnico',
+        self::ROLE_SUPERVISOR => 'Supervisor',
         self::ROLE_COMMERCIAL => 'Comercial',
         self::ROLE_CLIENT => 'Cliente',
     ];

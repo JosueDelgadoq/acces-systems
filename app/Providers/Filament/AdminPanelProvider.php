@@ -62,10 +62,13 @@ class AdminPanelProvider extends PanelProvider
                     ->label('BLOQUE B - Operaciones'),
                 NavigationGroup::make('BLOQUE C - Control')
                     ->label('BLOQUE C - Control'),
+                NavigationGroup::make('Comercial')
+                    ->label('Comercial'),
             ])
             ->resources([
                 UserResource::class,
                 ClientResource::class,
+
                 ClaimResource::class,
                 ConservationResource::class,
                 HabilitationResource::class,
@@ -73,6 +76,11 @@ class AdminPanelProvider extends PanelProvider
                 EquipmentDeliveryResource::class,
                 BillingControlResource::class,
                 PartsOrderResource::class,
+                \App\Filament\Resources\Leads\LeadResource::class,
+                \App\Filament\Resources\Pendientes\PendienteResource::class,
+                \App\Filament\Resources\Presupuestos\PresupuestoResource::class,
+\App\Filament\Resources\Ventas\VentaResource::class,
+
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -80,6 +88,7 @@ class AdminPanelProvider extends PanelProvider
                 Reports::class,
             ])
             ->widgets([
+                \App\Filament\Widgets\SalesFunnel::class,
                 AccountWidget::class,
                 BloqueAStats::class,
                 BloqueBStats::class,
@@ -89,7 +98,10 @@ class AdminPanelProvider extends PanelProvider
                 ConservationsChart::class,
                 ClaimsChart::class,
                 BillingChart::class,
+                \App\Filament\Widgets\BloqueComercialStats::class,
+                \App\Filament\Widgets\LeadsFunnelChart::class,
             ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
