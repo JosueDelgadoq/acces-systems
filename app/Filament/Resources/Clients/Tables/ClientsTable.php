@@ -13,23 +13,47 @@ class ClientsTable
     public static function configure(Table $table): Table
     {
         return $table
+        ->modifyQueryUsing(function ($query) {
+        return $query->select('clients.*')->distinct();
+    })
             ->columns([
-TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nombre')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('company')
                     ->label('Empresa')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
                     ->label('Email')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('phone')
                     ->label('Teléfono')
                     ->searchable(),
+                TextColumn::make('cuil')
+                    ->label('CUIL/CUIT')
+                    ->searchable()
+                    ->toggleable(),
+                    TextColumn::make('equipos')
+                        ->label('Equipos')
+                        ->badge()
+                        ->formatStateUsing(function ($record) {
+                            return $record->equipos()
+                                ->with('equipo')
+                                ->get()
+                                ->map(fn ($e) => $e->equipo->nombre)
+                                ->unique()
+                                ->values()
+                                ->join(', ');
+                        })
+                        ->color('info'),
                 TextColumn::make('id_crm')
                     ->label('ID CRM')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()

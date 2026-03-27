@@ -14,8 +14,19 @@ use BackedEnum;
 
 class PendienteResource extends Resource
 {
+    protected static ?string $model = Pendiente::class;
+    public static function getNavigationBadge(): ?string
+{
+return Pendiente::whereIn('status', ['pending', 'in_progress'])->count();}
+public static function getNavigationBadgeColor(): ?string
+{
+    $vencidos = Pendiente::where('status', '!=', 'completed')
+        ->where('due_date', '<', now())
+        ->count();
 
-    protected static ?string $model = \App\Models\PendienteView::class;
+    return $vencidos > 0 ? 'danger' : 'warning';
+    
+}
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationLabel = 'Pendientes';
@@ -24,10 +35,10 @@ class PendienteResource extends Resource
     protected static ?int $navigationSort = 2;
     protected static UnitEnum|string|null $navigationGroup = 'Gestión';
 
-    public static function form(Schema $schema): Schema
-    {
-        return PendienteForm::configure($schema);
-    }
+public static function form(Schema $schema): Schema
+{
+    return PendienteForm::configure($schema);
+}
 
     public static function table(Table $table): Table
     {
@@ -43,6 +54,8 @@ public static function getPages(): array
 {
     return [
         'index' => Pages\ListPendientes::route('/'),
+        'create' => Pages\CreatePendiente::route('/create'),
+        'edit' => Pages\EditPendiente::route('/{record}/edit'),
     ];
 }
 }

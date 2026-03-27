@@ -9,6 +9,7 @@ use App\Filament\Resources\Ventas\Schemas\VentaForm;
 use App\Filament\Resources\Ventas\Tables\VentasTable;
 use App\Models\Venta;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,7 +19,10 @@ class VentaResource extends Resource
 {
     protected static ?string $model = Venta::class;
 
+    protected static string|UnitEnum|null $navigationGroup = 'Comercial';   
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
 
     protected static ?string $recordTitleAttribute = 'id';
 

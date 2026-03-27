@@ -5,6 +5,10 @@ namespace App\Filament\Resources\Clients\Schemas;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
+
+
 
 class ClientForm
 {
@@ -30,6 +34,31 @@ class ClientForm
                     ->tel()
                     ->default(null),
 
+                    TextInput::make('cuil')
+                    ->label('CUIL / CUIT')
+                    ->rule('regex:/^\d{2}-?\d{8}-?\d{1}$/')
+                    ->helperText('Formato: 20-12345678-3'),
+
+                Repeater::make('equipos')
+    ->relationship()
+    ->schema([
+        Select::make('equipo_id')
+            ->relationship('equipo', 'nombre')
+            ->required(),
+
+        TextInput::make('serie'),
+        TextInput::make('ubicacion'),
+    ]),
+
+        TextInput::make('contacto')
+            ->label('Contacto')
+            ->nullable(),
+
+        TextInput::make('mails')
+            ->label('Email (opcional)')
+            ->email()
+            ->nullable(),
+
                 TextInput::make('id_crm')
                     ->label('ID CRM')
                     ->numeric()
@@ -42,7 +71,7 @@ class ClientForm
                     ->columnSpanFull(),
 
                 TextInput::make('city')
-                    ->label('Ciudad')
+                    ->label('Ciudad/localidad')
                     ->default(null),
 
                 TextInput::make('state')

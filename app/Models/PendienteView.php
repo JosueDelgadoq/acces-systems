@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class PendienteView extends Model
 {
-    protected $fillable = [
-        'id',
-        'type',
-        'client',
-        'description',
-        'due_date',
-        'priority',
-    ];
+protected $fillable = [
+    'client_id',
+    'user_id',
+    'type',
+    'description',
+    'status',
+    'priority', // 👈 AGREGAR
+    'due_date',
+    'completed_at',
+];
 
     public $timestamps = false;
 
@@ -24,4 +26,7 @@ class PendienteView extends Model
     {
         return 'pendientes_virtual'; // fake
     }
+    protected $casts = [
+    'completed_at' => 'datetime',
+];
 }

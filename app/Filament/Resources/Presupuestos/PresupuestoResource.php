@@ -9,6 +9,7 @@ use App\Filament\Resources\Presupuestos\Schemas\PresupuestoForm;
 use App\Filament\Resources\Presupuestos\Tables\PresupuestosTable;
 use App\Models\Presupuesto;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -19,6 +20,9 @@ class PresupuestoResource extends Resource
     protected static ?string $model = Presupuesto::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Comercial';   
+
 
     protected static ?string $recordTitleAttribute = 'id';
 

@@ -6,6 +6,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 
 class PendienteForm
 {
@@ -25,37 +26,63 @@ class PendienteForm
                 ->nullable(),
 
             Select::make('type')
-                ->label('Tipo')
                 ->options([
-                    'call' => 'Llamada',
-                    'email' => 'Email',
-                    'meeting' => 'Reunión',
-                    'other' => 'Otro',
+                    'reclamo' => 'Reclamo',
+                    'instalacion' => 'Instalación',
+                    'desinstalacion' => 'Desinstalación',
+                    'soporte' => 'Cambio de bateria',
+                    'diagnostico' => 'Visita técnica de diagnóstico',
+                        'mantenimiento' => 'Visita técnica de mantenimiento',
+                        'reparacion' => 'Reparación',
+                        'presupuesto' => 'Presupuestar',
                 ])
                 ->required(),
+
+            Select::make('priority')
+                ->label('Prioridad')
+                ->options([
+                    'baja' => 'Baja',
+                    'media' => 'Media',
+                    'alta' => 'Alta',
+                ])
+                ->default('media')
+                ->required(),
+
+                Hidden::make('source')
+                ->default('manual'),
+
+            DatePicker::make('due_date')
+                    ->label('Fecha programada')
+                    ->nullable()
+                    ->displayFormat('d/m/Y') // 👈 lo que ve el usuario
+                    ->format('Y-m-d') // 👈 lo que guarda
+                    ->native(false),
+
+                
+
+            Select::make('status')
+                ->label('Estado')
+                ->options([
+                    'pending' => 'Pendiente',
+                    'in_progress' => 'En proceso',
+                    'completed' => 'Finalizado',
+                    'cancelled' => 'Cancelado',
+                ])
+                ->default('pending')
+                ->required(),
+                
 
             Textarea::make('description')
                 ->label('Descripción')
                 ->required()
                 ->columnSpanFull(),
 
-            DatePicker::make('due_date')
-                ->label('Fecha límite')
-                ->required(),
-
-            Select::make('status')
-                ->label('Estado')
-                ->options([
-                    'pending' => 'Pendiente',
-                    'completed' => 'Completado',
-                    'cancelled' => 'Cancelado',
-                ])
-                ->default('pending')
-                ->required(),
-
             Textarea::make('notes')
-                ->label('Notas')
+                ->label('Observaciones')
                 ->columnSpanFull(),
+                
         ]);
+        
     }
+    
 }

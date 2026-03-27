@@ -12,22 +12,22 @@ class VentaPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isSupervisor() || $user->isCommercial();
+        return $user->isAdmin() || $user->isTecnico();
     }
 
     public function view(User $user, Venta $venta): bool
     {
-        return $user->isAdmin() || $user->isSupervisor() || $venta->created_by === $user->id;
+        return $user->isAdmin() || $user->isTecnico() || $venta->created_by === $user->id;
     }
 
     public function create(User $user): bool
     {
-        return $user->isAdmin() || $user->isCommercial();
+        return $user->isAdmin() || $user->isTecnico();
     }
 
     public function update(User $user, Venta $venta): bool
     {
-        return $user->isAdmin() || $user->isSupervisor() || $venta->created_by === $user->id;
+        return $user->isAdmin() || $user->isTecnico() || $venta->created_by === $user->id;
     }
 
     public function delete(User $user, Venta $venta): bool
