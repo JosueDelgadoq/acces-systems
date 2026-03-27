@@ -57,62 +57,20 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    /**
-     * Check if user is admin
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
+public function isAdmin(): bool
+{
+    return $this->role === 'admin';
+}
 
-    /**
-     * Check if user is manager
-     */
-    public function isManager(): bool
-    {
-        return $this->role === 'manager';
-    }
+public function isTecnico(): bool
+{
+    return $this->role === 'tecnico';
+}
 
-    /**
-     * Check if user is technician
-     */
-    public function isTechnician(): bool
-    {
-        return $this->role === 'technician';
-    }
-
-    /**
-     * Check if user is commercial
-     */
-    public function isCommercial(): bool
-    {
-        return $this->role === 'commercial';
-    }
-
-    /**
-     * Check if user is client
-     */
-    public function isClient(): bool
-    {
-        return $this->role === 'client';
-    }
-
-    /**
-     * Check if user is supervisor
-     */
-    public function isSupervisor(): bool
-    {
-        return $this->role === 'supervisor';
-    }
-
-    /**
-     * Check if user is tecnico
-     */
-    public function isTecnico(): bool
-    {
-        return $this->role === 'tecnico';
-    }
-
+public function isManager(): bool
+{
+    return $this->role === 'Manager';
+}
     /**
      * Get the role label in Spanish
      */
@@ -120,12 +78,8 @@ class User extends Authenticatable implements FilamentUser
     {
         return match($this->role) {
             'admin' => 'Administrador',
-            'manager' => 'Gerente',
-            'technician' => 'Técnico',
             'tecnico' => 'Técnico',
-            'supervisor' => 'Supervisor',
-            'commercial' => 'Comercial',
-            'client' => 'Cliente',
+            'Manager' => 'Postventa',
             default => 'Sin rol',
         };
     }
@@ -134,20 +88,13 @@ class User extends Authenticatable implements FilamentUser
      * Role constants
      */
     public const ROLE_ADMIN = 'admin';
-    public const ROLE_MANAGER = 'manager';
-    public const ROLE_TECHNICIAN = 'technician';
     public const ROLE_TECNICO = 'tecnico';
-    public const ROLE_SUPERVISOR = 'supervisor';
-    public const ROLE_COMMERCIAL = 'commercial';
-    public const ROLE_CLIENT = 'client';
 
-    public const ROLES = [
-        self::ROLE_ADMIN => 'Administrador',
-        self::ROLE_MANAGER => 'Gerente',
-        self::ROLE_TECHNICIAN => 'Técnico',
-        self::ROLE_TECNICO => 'Técnico',
-        self::ROLE_SUPERVISOR => 'Supervisor',
-        self::ROLE_COMMERCIAL => 'Comercial',
-        self::ROLE_CLIENT => 'Cliente',
-    ];
+    public const ROLE_MANAGER = 'Manager';
+
+public const ROLES = [
+    'admin' => 'Administrador',
+    'tecnico' => 'Técnico',
+    'Manager' => 'Postventa',
+];
 }

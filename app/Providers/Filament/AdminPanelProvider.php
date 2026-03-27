@@ -100,6 +100,8 @@ class AdminPanelProvider extends PanelProvider
                 BillingChart::class,
                 \App\Filament\Widgets\BloqueComercialStats::class,
                 \App\Filament\Widgets\LeadsFunnelChart::class,
+                \App\Filament\Widgets\PendientesStats::class,
+
             ])
 
             ->middleware([

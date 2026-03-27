@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pendiente extends Model
 {
-    protected $fillable = [
-        'client_id',
-        'user_id',
-        'type',
-        'description',
-        'due_date',
-        'status',
-        'notes',
-    ];
+protected $fillable = [
+    'client_id',
+    'user_id',
+    'type',
+    'description',
+    'status',
+    'priority', // 👈 AGREGAR
+    'due_date',
+    'completed_at',
+];
 
     // RELACIÓN CON CLIENTE
     public function client()
@@ -27,4 +28,9 @@ class Pendiente extends Model
     {
         return $this->belongsTo(User::class);
     }
+    protected $casts = [
+    'completed_at' => 'datetime',
+        'due_date' => 'datetime:d/m/Y',
+
+];
 }

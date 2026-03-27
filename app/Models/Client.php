@@ -20,6 +20,15 @@ class Client extends Model
         'address_notes',
     ];
 
+    protected static function booted()
+{
+    static::saving(function ($client) {
+        if ($client->exists) {
+            // borrar equipos antes de volver a guardar
+            $client->equipos()->delete();
+        }
+    });
+}
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
@@ -39,6 +48,10 @@ class Client extends Model
         return $this->hasMany(Conservation::class);
     }
 
+    public function equipos()
+{
+return $this->hasMany(ClientEquipo::class);    
+}
     public function habilitations()
     {
         return $this->hasMany(Habilitation::class);

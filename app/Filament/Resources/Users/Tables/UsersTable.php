@@ -32,7 +32,7 @@ class UsersTable
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'admin' => 'Administrador',
-                        'manager' => 'Gerente',
+                        'manager' => 'PostVenta',
                         'technician' => 'Técnico',
                         'commercial' => 'Comercial',
                         'client' => 'Cliente',

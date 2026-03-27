@@ -31,7 +31,7 @@ class HabilitationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'equipment';
 
-    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE B - Operaciones';
+    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
 
     public static function form(Schema $schema): Schema
     {

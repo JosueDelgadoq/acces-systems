@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 
 class ClientResource extends Resource
 {
+    
     protected static ?string $model = Client::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
@@ -36,12 +37,13 @@ class ClientResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return ClientForm::configure($schema);
-        
+                
     }
 
     public static function table(Table $table): Table
     {
         return ClientsTable::configure($table);
+        
     }
 
     public static function getRelations(): array
@@ -58,4 +60,5 @@ class ClientResource extends Resource
             'edit' => EditClient::route('/{record}/edit'),
         ];
     }
+    
 }
