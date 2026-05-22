@@ -17,6 +17,10 @@ class ClientsTable
         return $query->select('clients.*')->distinct();
     })
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID ERP')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable()
@@ -35,6 +39,7 @@ class ClientsTable
                 TextColumn::make('cuil')
                     ->label('CUIL/CUIT')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(),
                     TextColumn::make('equipos')
                         ->label('Equipos')
@@ -49,6 +54,11 @@ class ClientsTable
                                 ->join(', ');
                         })
                         ->color('info'),
+                TextColumn::make('installation_date')
+                    ->label('Instalación')
+                    ->date('d/m/Y')
+                    ->searchable()
+                    ->sortable(),  
                 TextColumn::make('id_crm')
                     ->label('ID CRM')
                     ->sortable()

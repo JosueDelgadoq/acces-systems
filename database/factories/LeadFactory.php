@@ -12,7 +12,9 @@ class LeadFactory extends Factory
 
     public function definition(): array
     {
-        $commercial = User::where('role', 'commercial')->first() ?? User::factory()->create(['role' => 'commercial']);
+        $commercial = User::role('comercial')->first() ?? tap(User::factory()->create(), function (User $user): void {
+            $user->assignRole('comercial');
+        });
 
         return [
             'nombre' => fake()->firstName(),
@@ -34,20 +36,20 @@ class LeadFactory extends Factory
             'tipo_orientacion' => fake()->randomElement([
                 'Verbal telefónica',
                 'Audio WhatsApp',
-                'Texto WhatsApp', 
+                'Texto WhatsApp',
                 'Estimado estructurado WhatsApp',
                 'PDF enviado por WhatsApp',
-                'PDF enviado por Mail'
+                'PDF enviado por Mail',
             ]),
             'fecha_orientacion' => fake()->dateTimeBetween('-15 days', 'now'),
             'estado_pipeline' => fake()->randomElement([
                 'Ingresado', 'Contactado', 'Orientacion dada', 'Cotizacion enviada',
-                'Presupuesto definitivo enviado', 'Venta cerrada', 'Perdido', 'Postergado'
+                'Presupuesto definitivo enviado', 'Venta cerrada', 'Perdido', 'Postergado',
             ]),
             'resultado_final' => fake()->randomElement(['Abierto', 'Vendido', 'Perdido']),
             'motivo_perdida' => fake()->randomElement([
                 'Precio', 'Forma de pago', 'Tiempo entrega', 'Competencia',
-                'Calidad percibida', 'Falta decisión', 'Otro'
+                'Calidad percibida', 'Falta decisión', 'Otro',
             ]),
             'canal_origen' => fake()->randomElement(['whatsapp', 'redes_sociales', 'mail', 'telefono']),
             'comercial_asignado_id' => $commercial->id,
@@ -55,4 +57,3 @@ class LeadFactory extends Factory
         ];
     }
 }
-

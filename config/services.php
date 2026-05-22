@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'samu' => [
+        'webhook_secret' => env('SAMU_WEBHOOK_SECRET'),
+        'api_key' => env('SAMU_API_KEY'),
+    ],
+
 ];

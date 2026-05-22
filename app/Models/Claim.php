@@ -23,7 +23,10 @@ class Claim extends Model
     {
         return $this->belongsTo(Client::class);
     }
-
+public function visits()
+{
+    return $this->hasMany(ServiceVisit::class);
+}
     public function technician()
     {
         return $this->belongsTo(User::class, 'technician_id');

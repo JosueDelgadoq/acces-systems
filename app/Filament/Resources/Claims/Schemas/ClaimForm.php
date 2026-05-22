@@ -44,13 +44,15 @@ class ClaimForm
                     ->searchable()
                     ->default(null),
                 DatePicker::make('scheduled_visit')
-                    ->label('Visita programada'),
+                    ->label('Visita programada')
+                    ->placeholder('Seleccionar fecha'),
                 Textarea::make('resolution')
                     ->label('Resolución')
                     ->default(null)
                     ->columnSpanFull(),
                 DateTimePicker::make('closed_at')
-                    ->label('Fecha de cierre'),
+                    ->label('Fecha de cierre')
+                    ->placeholder('Seleccionar fecha'),
             ]);
     }
 }

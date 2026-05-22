@@ -11,7 +11,8 @@ use Carbon\Carbon;
 class LeadsFunnelChart extends ChartWidget
 {
     protected ?string $heading = 'Embudo de Leads (Pipeline)';
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 6;
+    protected  ?string $extraAttributes = 'p-2';
 
     protected function getData(): array
     {

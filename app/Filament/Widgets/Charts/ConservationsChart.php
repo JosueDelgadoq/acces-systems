@@ -7,40 +7,36 @@ use Filament\Widgets\ChartWidget;
 
 class ConservationsChart extends ChartWidget
 {
-    protected ?string $heading = 'Conservaciones - Servicios del Mes';
+    protected ?string $heading = 'Conservaciones - Servicios del ciclo';
 
     protected function getData(): array
     {
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
-
-        // Get all active conservations (not expired)
-        $activeConservations = Conservation::where('expiration_date', '>=', now())->get();
+        $activeConservations = Conservation::activeContracts()->get();
 
         $servicesDone = 0;
         $servicesRemaining = 0;
 
         foreach ($activeConservations as $conservation) {
-            $servicesDone += $conservation->current_service_number ?? 1;
-            $servicesRemaining += $conservation->remaining_services ?? 0;
+            $servicesDone += $conservation->completed_services_count;
+            $servicesRemaining += $conservation->remaining_services;
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Servicios Realizados',
+                    'label' => 'Servicios realizados',
                     'data' => [$servicesDone],
                     'backgroundColor' => '#10b981',
                     'borderColor' => '#059669',
                 ],
                 [
-                    'label' => 'Servicios Restantes',
+                    'label' => 'Servicios pendientes',
                     'data' => [$servicesRemaining],
                     'backgroundColor' => '#f59e0b',
                     'borderColor' => '#d97706',
                 ],
             ],
-            'labels' => ['Este Mes'],
+            'labels' => ['Contratos activos'],
         ];
     }
 

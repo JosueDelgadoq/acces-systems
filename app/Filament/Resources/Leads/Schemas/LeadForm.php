@@ -2,172 +2,242 @@
 
 namespace App\Filament\Resources\Leads\Schemas;
 
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
+use App\Models\Equipo;
+use App\Models\Lead;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\View;
+use Illuminate\Support\HtmlString;
 
 class LeadForm
 {
     public static function make(): array
     {
         return [
-            Forms\Components\Section::make('Datos del Lead')
+            Section::make('Contexto comercial')
+                ->description('Base operativa del lead dentro del CRM.')
                 ->schema([
-                    Forms\Components\TextInput::make('crm_id')
-                        ->disabled()
-                        ->dehydrated(false)
-                        ->label('ID CRM'),
-                    Forms\Components\DatePicker::make('fecha_ingreso')
+                    TextInput::make('crm_id')
+                        ->label('ID CRM')
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true)
+                        ->helperText('Se puede cargar manualmente. Si lo dejas vacio, se genera automaticamente al guardar.'),
+
+                    DatePicker::make('fecha_ingreso')
+                        ->label('Fecha de ingreso')
                         ->default(now())
                         ->displayFormat('d/m/Y')
-                        ->label('Fecha Ingreso'),
-                    Forms\Components\DatePicker::make('hora_ingreso')
+                        ->native(false)
+                        ->required(),
+
+                    TimePicker::make('hora_ingreso')
+                        ->label('Hora de ingreso')
+                        ->seconds(false)
                         ->default(now())
-                        ->displayFormat('H:i')
-                        ->label('Hora Ingreso'),
-                    Forms\Components\Select::make('comercial_asignado_id')
+                        ->required(),
+
+                    Select::make('comercial_asignado_id')
+                        ->label('Comercial asignado')
                         ->relationship('comercialAsignado', 'name')
+                        ->default(fn (): ?int => auth()->id())
                         ->searchable()
                         ->preload()
-                        ->label('Comercial Asignado'),
-                    Forms\Components\Select::make('canal_origen')
-                        ->options([
-                            'whatsapp' => 'WhatsApp',
-                            'redes_sociales' => 'Redes Sociales',
-                            'mail' => 'Mail',
-                            'telefono' => 'Teléfono',
-                        ])
-                        ->default('whatsapp')
-                        ->label('Canal Origen'),
-                ])
-                ->columns(2),
+                        ->required(),
 
-            Forms\Components\Section::make('Datos del Cliente')
+                    Select::make('canal_origen')
+                        ->label('Canal de origen')
+                        ->options(Lead::getCanalOrigenOptions())
+                        ->default('whatsapp')
+                        ->required(),
+
+                    Placeholder::make('seguimiento_health')
+                        ->label('Salud del seguimiento')
+                        ->content(function (?Lead $record): HtmlString {
+                            if (! $record) {
+                                return new HtmlString('Se calcula despues de guardar el lead.');
+                            }
+
+                            $label = match ($record->estado_semaforo) {
+                                'urgente' => 'Urgente',
+                                'atencion' => 'Atencion',
+                                default => 'Al dia',
+                            };
+
+                            return new HtmlString(
+                                '<span class="font-medium">' . e($label) . '</span> - ' .
+                                e((string) $record->dias_sin_seguimiento) . ' dias sin gestion.'
+                            );
+                        }),
+                ])
+                ->columns(3),
+
+            Section::make('Datos del cliente')
                 ->schema([
-                    Forms\Components\TextInput::make('nombre')
+                    TextInput::make('nombre')
+                        ->label('Nombre')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('apellido')
+
+                    TextInput::make('apellido')
+                        ->label('Apellido')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('telefono')
+
+                    TextInput::make('telefono')
+                        ->label('Telefono')
                         ->tel()
                         ->required(),
-                    Forms\Components\TextInput::make('email')
+
+                    TextInput::make('email')
+                        ->label('Email')
                         ->email()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('localidad')
+
+                    TextInput::make('localidad')
+                        ->label('Localidad')
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('provincia')
+
+                    TextInput::make('provincia')
+                        ->label('Provincia')
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('zona_comercial')
+
+                    TextInput::make('zona_comercial')
+                        ->label('Zona comercial')
                         ->maxLength(255),
+
+                    Select::make('tipo_cliente')
+                        ->label('Tipo de cliente')
+                        ->options(Lead::getTipoClienteOptions()),
+
+                    Select::make('subtipo_publico')
+                        ->label('Subtipo publico')
+                        ->options(Lead::getSubtipoPublicoOptions())
+                        ->visible(fn (Get $get): bool => $get('tipo_cliente') === 'Público'),
                 ])
-                ->columns(2),
+                ->columns(3),
 
-            Forms\Components\Section::make('Clasificación del Cliente')
+            Section::make('Interes y calificacion')
                 ->schema([
-                    Forms\Components\Select::make('tipo_cliente')
-                        ->options([
-                            'Residencial' => 'Residencial',
-                            'Público' => 'Público',
-                            'Empresa' => 'Empresa',
-                            'Constructor' => 'Constructor',
-                        ]),
-                    Forms\Components\Select::make('subtipo_publico')
-                        ->options([
-                            'Universidad' => 'Universidad',
-                            'Municipalidad' => 'Municipalidad',
-                            'Banco' => 'Banco',
-                            'Hospital' => 'Hospital',
-                            'Otro' => 'Otro',
-                        ])
-                        ->visible(fn (Get $get) => $get('tipo_cliente') === 'Público'),
-                ]),
+                    Select::make('producto_interes')
+                        ->label('Producto de interes')
+                        ->options(function (Get $get, ?Lead $record): array {
+                            $options = Equipo::query()
+                                ->orderBy('nombre')
+                                ->pluck('nombre', 'nombre')
+                                ->all();
 
-            Forms\Components\Section::make('Interés Inicial')
-                ->schema([
-                    Forms\Components\TextInput::make('producto_interes')
-                        ->maxLength(255),
-                    Forms\Components\Select::make('tipo_instalacion')
-                        ->options([
-                            'Recta' => 'Recta',
-                            'Curva' => 'Curva',
-                            'Exterior' => 'Exterior',
-                            'Piscina' => 'Piscina',
-                            'Vertical' => 'Vertical',
-                        ]),
-                    Forms\Components\Textarea::make('documentacion_cliente')
-                        ->maxLength(65535)
-                        ->rows(3),
-    Forms\Components\CheckboxList::make('docs')
-                        ->label('Documentación enviada')
-                        ->options([
-                            'cliente_envio_fotos' => 'Fotos',
-                            'cliente_envio_planos' => 'Planos',
-                            'requiere_relevamiento_pago' => 'Requiere relevamiento pago',
-                        ])
-                        ->columns(1),
-                ]),
+                            $currentValue = $get('producto_interes') ?: $record?->producto_interes;
 
-            Forms\Components\Section::make('Orientación de Costos')
-                ->schema([
-    Forms\Components\Toggle::make('orientacion_dada')
-                        ->label('Orientación Dada'),
-                    Forms\Components\Select::make('tipo_orientacion')
-                        ->options([
-                            'Verbal telefónica' => 'Verbal telefónica',
-                            'Audio WhatsApp' => 'Audio WhatsApp',
-                            'Texto WhatsApp' => 'Texto WhatsApp',
-                            'Estimado estructurado WhatsApp' => 'Estimado estructurado WhatsApp',
-                            'PDF enviado por WhatsApp' => 'PDF enviado por WhatsApp',
-                            'PDF enviado por Mail' => 'PDF enviado por Mail',
-                        ])
-                        ->visible(fn (Get $get) => $get('orientacion_dada')),
-                    Forms\Components\DatePicker::make('fecha_orientacion')
-                        ->visible(fn (Get $get) => $get('orientacion_dada')),
-                ]),
+                            if (filled($currentValue) && ! array_key_exists($currentValue, $options)) {
+                                $options[$currentValue] = $currentValue;
+                            }
 
-            Forms\Components\Section::make('Pipeline Comercial')
+                            return $options;
+                        })
+                        ->searchable()
+                        ->preload()
+                        ->native(false),
+
+                    Select::make('tipo_instalacion')
+                        ->label('Tipo de instalacion')
+                        ->options(Lead::getTipoInstalacionOptions()),
+
+                    FileUpload::make('documentacion_cliente_archivos')
+                        ->label('Documentacion enviada por el cliente')
+                        ->multiple()
+                        ->disk('public')
+                        ->directory('leads/documentacion')
+                        ->maxFiles(10)
+                        ->maxSize(51200)
+                        ->downloadable()
+                        ->openable()
+                        ->helperText('Carga PDFs, imagenes o archivos de apoyo del lead. Hasta 10 archivos de 50 MB cada uno.')
+                        ->columnSpanFull(),
+
+                    Placeholder::make('documentacion_cliente_legacy')
+                        ->label('Observacion historica')
+                        ->content(fn (?Lead $record): string => trim((string) $record?->documentacion_cliente))
+                        ->visible(fn (?Lead $record): bool => filled($record?->documentacion_cliente))
+                        ->columnSpanFull(),
+
+                    Toggle::make('cliente_envio_fotos')
+                        ->label('Cliente envio fotos'),
+
+                    Toggle::make('cliente_envio_planos')
+                        ->label('Cliente envio planos'),
+
+                    Toggle::make('requiere_relevamiento_pago')
+                        ->label('Requiere relevamiento pago'),
+
+                    Toggle::make('orientacion_dada')
+                        ->label('Orientacion de costos realizada')
+                        ->live(),
+
+                    Select::make('tipo_orientacion')
+                        ->label('Tipo de orientacion')
+                        ->options(Lead::getTipoOrientacionOptions())
+                        ->visible(fn (Get $get): bool => (bool) $get('orientacion_dada')),
+
+                    DatePicker::make('fecha_orientacion')
+                        ->label('Fecha de orientacion')
+                        ->displayFormat('d/m/Y')
+                        ->native(false)
+                        ->visible(fn (Get $get): bool => (bool) $get('orientacion_dada')),
+                ])
+                ->columns(3),
+
+            Section::make('Pipeline y cierre')
+                ->description('Estado comercial, resultado y ownership del lead.')
                 ->schema([
-                    Forms\Components\Select::make('estado_pipeline')
-                        ->options([
-                            'Ingresado' => 'Ingresado',
-                            'Contactado' => 'Contactado',
-                            'Orientacion dada' => 'Orientación dada',
-                            'Cotizacion enviada' => 'Cotización enviada',
-                            'Presupuesto definitivo enviado' => 'Presupuesto definitivo enviado',
-                            'Venta cerrada' => 'Venta cerrada',
-                            'Perdido' => 'Perdido',
-                            'Postergado' => 'Postergado',
-                        ])
-                        ->default('Ingresado')
-                        ->label('Estado Pipeline'),
-                    Forms\Components\Select::make('resultado_final')
-                        ->options([
-                            'Abierto' => 'Abierto',
-                            'Vendido' => 'Vendido',
-                            'Perdido' => 'Perdido',
-                        ]),
-                    Forms\Components\Select::make('motivo_perdida')
-                        ->options([
-                            'Precio' => 'Precio',
-                            'Forma de pago' => 'Forma de pago',
-                            'Tiempo entrega' => 'Tiempo entrega',
-                            'Competencia' => 'Competencia',
-                            'Calidad percibida' => 'Calidad percibida',
-                            'Falta decisión' => 'Falta decisión',
-                            'Otro' => 'Otro',
-                        ])
-                        ->visible(fn (Get $get) => $get('resultado_final') === 'Perdido'),
-                    Forms\Components\DatePicker::make('fecha_cierre'),
-                    Forms\Components\Select::make('area_responsable')
-                        ->options([
-                            'Comercial Venta' => 'Comercial Venta',
-                            'Postventa' => 'Postventa',
-                        ]),
-                ]),
+                    Select::make('estado_pipeline')
+                        ->label('Estado del pipeline')
+                        ->options(Lead::getPipelineOptions())
+                        ->default(Lead::STAGE_INGRESADO)
+                        ->required()
+                        ->live(),
+
+                    Select::make('resultado_final')
+                        ->label('Resultado final')
+                        ->options(Lead::getResultadoOptions())
+                        ->default(Lead::RESULTADO_ABIERTO)
+                        ->helperText('Se ajusta automaticamente cuando el lead se cierra como venta o perdido.'),
+
+                    Select::make('motivo_perdida')
+                        ->label('Motivo de perdida')
+                        ->options(Lead::getMotivoPerdidaOptions())
+                        ->visible(fn (Get $get): bool => $get('estado_pipeline') === Lead::STAGE_PERDIDO),
+
+                    DatePicker::make('fecha_cierre')
+                        ->label('Fecha de cierre')
+                        ->displayFormat('d/m/Y')
+                        ->native(false)
+                        ->visible(fn (Get $get): bool => in_array($get('estado_pipeline'), Lead::CLOSED_PIPELINES, true)),
+
+                    Select::make('area_responsable')
+                        ->label('Area responsable')
+                        ->options(Lead::getAreaResponsableOptions()),
+
+                    Placeholder::make('last_follow_up')
+                        ->label('Ultimo seguimiento')
+                        ->content(fn (?Lead $record): string => $record?->fecha_ultimo_seguimiento?->format('d/m/Y') ?? 'Sin registros'),
+                ])
+                ->columns(3),
+
+            Section::make('Trazabilidad')
+                ->description('Linea de tiempo automatica del lead y sus movimientos comerciales.')
+                ->schema([
+                    View::make('filament.leads.history')
+                        ->columnSpanFull(),
+                ])
+                ->visible(fn (?Lead $record): bool => filled($record))
+                ->columnSpanFull(),
         ];
     }
 }
-

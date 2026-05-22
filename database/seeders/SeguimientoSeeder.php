@@ -11,9 +11,13 @@ class SeguimientoSeeder extends Seeder
 {
     public function run(): void
     {
-        $comerciales = User::where('role', 'comercial')->take(3)->pluck('id');
+        $comerciales = User::role('comercial')->take(3)->pluck('id');
 
-        Lead::all()->each(function ($lead) use ($comerciales) {
+        Lead::query()->get()->each(function ($lead) use ($comerciales) {
+            if ($comerciales->isEmpty()) {
+                return;
+            }
+
             Seguimiento::factory()
                 ->count(rand(1, 5))
                 ->create([
@@ -23,4 +27,3 @@ class SeguimientoSeeder extends Seeder
         });
     }
 }
-

@@ -19,24 +19,17 @@ class UsersTable
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('role')
+                TextColumn::make('roles.name')
                     ->label('Rol')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : ucfirst($state))
+                    ->color(fn ($state) => match ($state) {
                         'admin' => 'danger',
-                        'manager' => 'warning',
-                        'technician' => 'info',
-                        'commercial' => 'success',
-                        'client' => 'gray',
+                        'gerente' => 'warning',
+                        'tecnico' => 'info',
+                        'comercial' => 'success',
+                        'administrativo' => 'primary',
                         default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'admin' => 'Administrador',
-                        'manager' => 'PostVenta',
-                        'technician' => 'Técnico',
-                        'commercial' => 'Comercial',
-                        'client' => 'Cliente',
-                        default => $state,
                     }),
                 TextColumn::make('created_at')
                     ->label('Creado')

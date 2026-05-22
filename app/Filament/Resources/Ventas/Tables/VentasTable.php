@@ -14,20 +14,28 @@ class VentasTable
     {
         return $table
             ->columns([
-                TextColumn::make('cliente_nombre')
+                TextColumn::make('lead.crm_id')
+                    ->label('CRM')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('lead.cliente')
+                    ->label('Cliente')
                     ->searchable(),
-                TextColumn::make('producto')
+                TextColumn::make('producto_instalado')
+                    ->label('Producto instalado')
                     ->searchable(),
-                TextColumn::make('monto')
-                    ->numeric()
+                TextColumn::make('monto_total')
+                    ->label('Monto total')
+                    ->money('ARS')
                     ->sortable(),
                 TextColumn::make('estado')
-                    ->searchable(),
-                TextColumn::make('fecha')
+                    ->badge(),
+                TextColumn::make('fecha_cierre')
+                    ->label('Fecha de cierre')
                     ->date()
                     ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->label('Creado por')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -37,9 +45,6 @@ class VentasTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

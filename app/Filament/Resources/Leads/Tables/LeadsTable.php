@@ -3,107 +3,107 @@
 namespace App\Filament\Resources\Leads\Tables;
 
 use App\Models\Lead;
-use Filament\Tables\Table;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class LeadsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('fecha_ingreso', 'desc')
             ->columns([
-
                 TextColumn::make('crm_id')
                     ->label('ID CRM')
                     ->weight(FontWeight::Bold)
                     ->sortable()
                     ->searchable(),
 
-                IconColumn::make('estado_semaforo')
-                    ->label('Seguimiento')
-                    ->icon(fn ($state) => match ($state) {
-                        'urgente' => 'heroicon-m-exclamation-triangle',
-                        'atencion' => 'heroicon-m-exclamation-circle',
-                        'ok' => 'heroicon-m-check-circle',
-                        default => 'heroicon-m-check-circle',
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'urgente' => 'danger',
-                        'atencion' => 'warning',
-                        'ok' => 'success',
-                        default => 'gray',
-                    }),
-
                 TextColumn::make('cliente')
                     ->label('Cliente')
-                    ->state(fn (Lead $record) => $record->nombre . ' ' . $record->apellido)
-                    ->searchable(['nombre', 'apellido'])
-                    ->sortable(),
+                    ->state(fn (Lead $record): string => $record->cliente)
+                    ->description(fn (Lead $record): string => trim(($record->telefono ?: 'Sin telefono') . ' - ' . ($record->email ?: 'Sin email')))
+                    ->searchable(['nombre', 'apellido', 'telefono', 'email']),
 
-                TextColumn::make('telefono')
-                    ->label('Teléfono')
-                    ->url(fn ($record) => "https://wa.me/54".$record->telefono)
-                    ->openUrlInNewTab()
-                    ->icon('heroicon-m-chat-bubble-left-right'),
-
-                TextColumn::make('estado_pipeline')
-                    ->label('Estado')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Ingresado' => 'gray',
-                        'Contactado' => 'info',
-                        'Orientacion dada' => 'success',
-                        'Cotizacion enviada' => 'warning',
-                        'Presupuesto definitivo enviado' => 'warning',
-                        'Venta cerrada' => 'success',
-                        'Perdido' => 'danger',
-                        'Postergado' => 'gray',
-                        default => 'gray',
-                    })
-                    ->sortable(),
-
-                TextColumn::make('dias_sin_seguimiento')
-                    ->label('Días sin seguimiento')
-                    ->suffix(' días')
+                TextColumn::make('comercialAsignado.name')
+                    ->label('Comercial')
+                    ->placeholder('Sin asignar')
                     ->sortable()
                     ->toggleable(),
 
-                TextColumn::make('fecha_ingreso')
-                    ->label('Fecha ingreso')
-                    ->date()
+                TextColumn::make('estado_pipeline')
+                    ->label('Pipeline')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => Lead::getPipelineLabel($state))
+                    ->color(fn (?string $state): string => Lead::getPipelineColor($state))
                     ->sortable(),
 
-            ])
+                TextColumn::make('nextPendingSeguimiento.proxima_accion')
+                    ->label('Proxima accion')
+                    ->placeholder('Sin accion programada')
+                    ->wrap()
+                    ->limit(50),
 
+                TextColumn::make('nextPendingSeguimiento.fecha_proxima_accion')
+                    ->label('Compromiso')
+                    ->date('d/m/Y')
+                    ->placeholder('Sin fecha')
+                    ->color(function ($state, Lead $record): string {
+                        if (! $record->nextPendingSeguimiento?->fecha_proxima_accion) {
+                            return 'gray';
+                        }
+
+                        return $record->nextPendingSeguimiento->fecha_proxima_accion->isPast() ? 'danger' : 'warning';
+                    })
+                    ->sortable(),
+
+                TextColumn::make('fecha_ultimo_seguimiento')
+                    ->label('Ultima gestion')
+                    ->date('d/m/Y')
+                    ->placeholder('Sin registrar')
+                    ->sortable(),
+
+                TextColumn::make('estado_semaforo')
+                    ->label('Ritmo')
+                    ->formatStateUsing(fn (Lead $record): string => match ($record->estado_semaforo) {
+                        'urgente' => 'Urgente',
+                        'atencion' => 'Atencion',
+                        default => 'Al dia',
+                    })
+                    ->badge()
+                    ->color(fn (Lead $record): string => match ($record->estado_semaforo) {
+                        'urgente' => 'danger',
+                        'atencion' => 'warning',
+                        default => 'success',
+                    }),
+            ])
             ->filters([
-
                 SelectFilter::make('estado_pipeline')
-                    ->label('Estado')
-                    ->options([
-                        'Ingresado' => 'Ingresado',
-                        'Contactado' => 'Contactado',
-                        'Orientacion dada' => 'Orientación dada',
-                        'Cotizacion enviada' => 'Cotización enviada',
-                        'Presupuesto definitivo enviado' => 'Presupuesto definitivo enviado',
-                        'Venta cerrada' => 'Venta cerrada',
-                        'Perdido' => 'Perdido',
-                        'Postergado' => 'Postergado',
-                    ]),
+                    ->label('Pipeline')
+                    ->options(Lead::getPipelineOptions()),
 
-                SelectFilter::make('canal_origen')
-                    ->label('Origen')
-                    ->options([
-                        'whatsapp' => 'WhatsApp',
-                        'redes_sociales' => 'Redes Sociales',
-                        'mail' => 'Mail',
-                        'telefono' => 'Teléfono',
-                    ]),
+                SelectFilter::make('comercial_asignado_id')
+                    ->label('Comercial')
+                    ->relationship('comercialAsignado', 'name')
+                    ->searchable()
+                    ->preload(),
 
+                Filter::make('solo_abiertos')
+                    ->label('Solo abiertos')
+                    ->query(fn ($query) => $query->openPipeline()),
+
+                Filter::make('sin_gestion_reciente')
+                    ->label('Sin gestion reciente')
+                    ->query(fn ($query) => $query->whereDate('fecha_ultimo_seguimiento', '<', now()->subDays(3))),
             ])
-
-            ->defaultSort('fecha_ingreso', 'desc');
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ]);
     }
 }

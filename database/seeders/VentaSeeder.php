@@ -2,19 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\Venta;
 use App\Models\User;
+use App\Models\Venta;
 use Illuminate\Database\Seeder;
 
 class VentaSeeder extends Seeder
 {
     public function run(): void
     {
-        $commercial = User::where('role', 'commercial')->first();
+        $commercial = User::role('comercial')->first();
 
         Venta::factory(10)->create([
-            'created_by' => $commercial?->id ?? 1,
+            'created_by' => $commercial?->id ?? User::query()->value('id') ?? 1,
         ]);
     }
 }
-

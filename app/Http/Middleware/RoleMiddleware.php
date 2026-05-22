@@ -8,9 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next, string $role): Response
     {
         if (!$request->user()) {
@@ -18,8 +15,8 @@ class RoleMiddleware
         }
 
         $roles = array_slice(func_get_args(), 2);
-        
-        if (!in_array($request->user()->role, $roles)) {
+
+        if (!$request->user()->hasAnyRole($roles)) {
             abort(403, 'No tienes acceso a esta sección.');
         }
 

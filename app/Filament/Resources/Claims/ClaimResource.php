@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Claims;
 
+use App\Filament\Concerns\HasPermissionControlledResource;
 use App\Filament\Resources\Claims\Pages\CreateClaim;
 use App\Filament\Resources\Claims\Pages\EditClaim;
 use App\Filament\Resources\Claims\Pages\ListClaims;
@@ -9,18 +10,19 @@ use App\Filament\Resources\Claims\Schemas\ClaimForm;
 use App\Filament\Resources\Claims\Tables\ClaimsTable;
 use App\Models\Claim;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ClaimResource extends Resource
 {
+    use HasPermissionControlledResource;
+
     protected static ?string $model = Claim::class;
 
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $navigationLabel = 'Reclamos';
 
@@ -30,7 +32,17 @@ class ClaimResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
+    protected static string | UnitEnum | null $navigationGroup = 'Gestion';
+
+    protected static ?string $navigationPermission = 'claim.view';
+
+    protected static ?string $viewAnyPermission = 'claim.view';
+
+    protected static ?string $createPermission = 'claim.create';
+
+    protected static ?string $updatePermission = 'claim.update';
+
+    protected static ?string $deletePermission = 'claim.delete';
 
     public static function form(Schema $schema): Schema
     {
@@ -44,9 +56,7 @@ class ClaimResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

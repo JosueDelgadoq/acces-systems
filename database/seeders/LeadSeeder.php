@@ -10,11 +10,10 @@ class LeadSeeder extends Seeder
 {
     public function run(): void
     {
-        $commercial = User::where('role', 'commercial')->first();
+        $commercial = User::role('comercial')->first();
 
         Lead::factory(10)->create([
-            'created_by' => $commercial?->id ?? 1,
+            'created_by' => $commercial?->id ?? User::query()->value('id') ?? 1,
         ]);
     }
 }
-

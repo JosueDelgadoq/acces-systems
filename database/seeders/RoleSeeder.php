@@ -9,17 +9,24 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = ['admin', 'commercial', 'supervisor', 'tecnico'];
-        foreach ($roles as $role) {
-            User::firstOrCreate(
-                ['email' => $role . '@example.com'],
+        $usersByRole = [
+            'admin' => ['name' => 'Administrador', 'email' => 'admin@example.com'],
+            'gerente' => ['name' => 'Gerente', 'email' => 'gerente@example.com'],
+            'comercial' => ['name' => 'Comercial', 'email' => 'comercial@example.com'],
+            'tecnico' => ['name' => 'Tecnico', 'email' => 'tecnico@example.com'],
+            'administrativo' => ['name' => 'Administrativo', 'email' => 'administrativo@example.com'],
+        ];
+
+        foreach ($usersByRole as $role => $attributes) {
+            $user = User::firstOrCreate(
+                ['email' => $attributes['email']],
                 [
-                    'name' => ucfirst($role),
+                    'name' => $attributes['name'],
                     'password' => bcrypt('password'),
-                    'role' => $role,
-                ]
+                ],
             );
+
+            $user->syncRoles([$role]);
         }
     }
 }
-

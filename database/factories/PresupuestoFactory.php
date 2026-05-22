@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Presupuesto;
 use App\Models\Lead;
+use App\Models\Presupuesto;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,7 +13,9 @@ class PresupuestoFactory extends Factory
 
     public function definition(): array
     {
-        $commercial = User::where('role', 'commercial')->first() ?? User::factory()->create(['role' => 'commercial']);
+        $commercial = User::role('comercial')->first() ?? tap(User::factory()->create(), function (User $user): void {
+            $user->assignRole('comercial');
+        });
         $lead = Lead::factory()->create();
 
         $p1 = fake()->randomFloat(2, 500, 10000);
@@ -37,4 +39,3 @@ class PresupuestoFactory extends Factory
         ];
     }
 }
-

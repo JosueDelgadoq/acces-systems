@@ -14,18 +14,26 @@ class PresupuestosTable
     {
         return $table
             ->columns([
-                TextColumn::make('lead.id')
-                    ->searchable(),
-                TextColumn::make('monto')
-                    ->numeric()
+                TextColumn::make('lead.crm_id')
+                    ->label('CRM')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('estado')
-                    ->badge(),
+                TextColumn::make('lead.cliente')
+                    ->label('Cliente')
+                    ->searchable(),
+                TextColumn::make('presupuesto_definitivo')
+                    ->label('Definitivo')
+                    ->money('ARS')
+                    ->sortable(),
+                TextColumn::make('total')
+                    ->label('Total items')
+                    ->money('ARS'),
                 TextColumn::make('fecha_envio')
+                    ->label('Fecha de envío')
                     ->date()
                     ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->label('Creado por')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -35,9 +43,6 @@ class PresupuestosTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

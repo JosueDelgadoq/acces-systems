@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Habilitations;
 
+use App\Filament\Concerns\HasPermissionControlledResource;
 use App\Filament\Resources\Habilitations\Pages\CreateHabilitation;
 use App\Filament\Resources\Habilitations\Pages\EditHabilitation;
 use App\Filament\Resources\Habilitations\Pages\ListHabilitations;
@@ -9,21 +10,23 @@ use App\Filament\Resources\Habilitations\Schemas\HabilitationForm;
 use App\Filament\Resources\Habilitations\Tables\HabilitationsTable;
 use App\Models\Habilitation;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class HabilitationResource extends Resource
 {
+    use HasPermissionControlledResource;
+
     protected static ?string $model = Habilitation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedDocumentCheck;
 
     protected static ?string $navigationLabel = 'Habilitaciones';
 
-    protected static ?string $modelLabel = 'Habilitación';
+    protected static ?string $modelLabel = 'Habilitacion';
 
     protected static ?string $pluralModelLabel = 'Habilitaciones';
 
@@ -31,7 +34,17 @@ class HabilitationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'equipment';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Gestión';
+    protected static string | UnitEnum | null $navigationGroup = 'Gestion';
+
+    protected static ?string $navigationPermission = 'habilitation.view';
+
+    protected static ?string $viewAnyPermission = 'habilitation.view';
+
+    protected static ?string $createPermission = 'habilitation.create';
+
+    protected static ?string $updatePermission = 'habilitation.update';
+
+    protected static ?string $deletePermission = 'habilitation.delete';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,9 +58,7 @@ class HabilitationResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -59,4 +70,3 @@ class HabilitationResource extends Resource
         ];
     }
 }
-

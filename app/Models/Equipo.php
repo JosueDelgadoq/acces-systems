@@ -10,4 +10,8 @@ public function clients()
 {
     return $this->belongsToMany(Client::class);
 }
+public function repuestos()
+{
+    return $this->hasMany(EquipoRepuesto::class);
+}
 }

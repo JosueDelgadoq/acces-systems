@@ -25,7 +25,7 @@ class PendientesService
         }
 
         // 🔴 CONSERVACIONES VENCIDAS
-        foreach (Conservation::where('next_service_date', '<', now())->get() as $c) {
+        foreach (Conservation::schedulable()->where('next_service_date', '<', now())->get() as $c) {
             $pendientes->push([
                 'id' => uniqid(),
                 'type' => 'Conservación',
@@ -38,7 +38,7 @@ class PendientesService
 
         // 🟡 PRÓXIMAS (3 días)
         foreach (
-            Conservation::whereBetween('next_service_date', [now(), now()->addDays(3)])->get()
+            Conservation::schedulable()->whereBetween('next_service_date', [now(), now()->addDays(3)])->get()
             as $c
         ) {
             $pendientes->push([

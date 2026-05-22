@@ -7,7 +7,7 @@ use Filament\Widgets\ChartWidget;
 
 class MonthlyConservationsChart extends ChartWidget
 {
-    protected ?string $heading = 'Conservaciones - Últimos 6 Meses';
+    protected ?string $heading = 'Conservaciones - Últimos 6 meses';
 
     protected function getData(): array
     {
@@ -18,10 +18,12 @@ class MonthlyConservationsChart extends ChartWidget
             $month = now()->subMonths($i);
             $months[] = $month->format('M');
 
-            // Count conservations that were active in this month
-            $count = Conservation::where('start_date', '<=', $month->endOfMonth())
+            $count = Conservation::query()
+                ->where('contract_status', Conservation::STATUS_ACTIVE)
+                ->where('start_date', '<=', $month->endOfMonth())
                 ->where(function ($query) use ($month) {
-                    $query->where('expiration_date', '>=', $month->startOfMonth())
+                    $query
+                        ->where('expiration_date', '>=', $month->startOfMonth())
                         ->orWhereNull('expiration_date');
                 })
                 ->count();
@@ -32,7 +34,7 @@ class MonthlyConservationsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Contratos Activos',
+                    'label' => 'Contratos activos',
                     'data' => $servicesData,
                     'backgroundColor' => '#8b5cf6',
                     'borderColor' => '#7c3aed',

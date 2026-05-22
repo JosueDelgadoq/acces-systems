@@ -2,28 +2,26 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Reports;
-use App\Filament\Resources\Users\UserResource;
-use App\Filament\Resources\Clients\ClientResource;
-use App\Filament\Resources\Claims\ClaimResource;
-use App\Filament\Resources\Conservations\ConservationResource;
-use App\Filament\Resources\Habilitations\HabilitationResource;
-use App\Filament\Resources\TechnicalBudgets\TechnicalBudgetResource;
-use App\Filament\Resources\EquipmentDeliveries\EquipmentDeliveryResource;
 use App\Filament\Resources\BillingControls\BillingControlResource;
+use App\Filament\Resources\Claims\ClaimResource;
+use App\Filament\Resources\Clients\ClientResource;
+use App\Filament\Resources\Conservations\ConservationResource;
+use App\Filament\Resources\EquipmentDeliveries\EquipmentDeliveryResource;
+use App\Filament\Resources\Habilitations\HabilitationResource;
 use App\Filament\Resources\PartsOrders\PartsOrderResource;
+use App\Filament\Resources\TechnicalBudgets\TechnicalBudgetResource;
+use App\Filament\Resources\Users\UserResource;
 use App\Filament\Widgets\BloqueAStats;
 use App\Filament\Widgets\BloqueBStats;
 use App\Filament\Widgets\BloqueCStats;
-use App\Filament\Widgets\Charts\ConservationsChart;
-use App\Filament\Widgets\Charts\ClaimsChart;
 use App\Filament\Widgets\Charts\BillingChart;
+use App\Filament\Widgets\Charts\ClaimsChart;
+use App\Filament\Widgets\Charts\ConservationsChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -43,10 +41,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->databaseNotifications()
             ->login()
-            ->brandName('ERP Postventa')
+            ->brandName('ERP Access Systems')
+            ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
-                'primary' => Color::Violet,
+                'primary' => Color::Blue,
                 'secondary' => Color::Indigo,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
@@ -54,21 +55,22 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => Color::Slate,
             ])
             ->navigationGroups([
-                NavigationGroup::make('Gestión')
-                    ->label('Gestión'),
                 NavigationGroup::make('BLOQUE A - Admin')
                     ->label('BLOQUE A - Admin'),
+                NavigationGroup::make('Gestion')
+                    ->label('Gestion'),
                 NavigationGroup::make('BLOQUE B - Operaciones')
                     ->label('BLOQUE B - Operaciones'),
                 NavigationGroup::make('BLOQUE C - Control')
                     ->label('BLOQUE C - Control'),
                 NavigationGroup::make('Comercial')
                     ->label('Comercial'),
+                NavigationGroup::make('Stock')
+                    ->label('Stock'),
             ])
             ->resources([
                 UserResource::class,
                 ClientResource::class,
-
                 ClaimResource::class,
                 ConservationResource::class,
                 HabilitationResource::class,
@@ -79,14 +81,10 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Resources\Leads\LeadResource::class,
                 \App\Filament\Resources\Pendientes\PendienteResource::class,
                 \App\Filament\Resources\Presupuestos\PresupuestoResource::class,
-\App\Filament\Resources\Ventas\VentaResource::class,
-
+                \App\Filament\Resources\Ventas\VentaResource::class,
             ])
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
-                Reports::class,
-            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->widgets([
                 \App\Filament\Widgets\SalesFunnel::class,
                 AccountWidget::class,
@@ -101,9 +99,13 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\BloqueComercialStats::class,
                 \App\Filament\Widgets\LeadsFunnelChart::class,
                 \App\Filament\Widgets\PendientesStats::class,
-
             ])
-
+            ->spaUrlExceptions([
+                '/admin/mapa-clientes',
+                '/admin/mapa-clientes*',
+                rtrim(config('app.url'), '/') . '/admin/mapa-clientes',
+                rtrim(config('app.url'), '/') . '/admin/mapa-clientes*',
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -114,7 +116,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-])
+            ])
             ->authMiddleware([
                 Authenticate::class,
             ])

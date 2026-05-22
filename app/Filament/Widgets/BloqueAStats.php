@@ -10,6 +10,7 @@ use Filament\Support\Icons\Heroicon;
 
 class BloqueAStats extends BaseWidget
 {
+    protected static bool $isDiscovered = false;
     protected function getStats(): array
     {
         return [

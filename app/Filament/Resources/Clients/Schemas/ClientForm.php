@@ -7,6 +7,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\DatePicker;
+
 
 
 
@@ -35,20 +37,23 @@ class ClientForm
                     ->default(null),
 
                     TextInput::make('cuil')
-                    ->label('CUIL / CUIT')
-                    ->rule('regex:/^\d{2}-?\d{8}-?\d{1}$/')
-                    ->helperText('Formato: 20-12345678-3'),
+                    ->label('CUIL / CUIT/ DNI')
+                    ->helperText('Formato: 12345678 / 20-12345678-3'),
 
                 Repeater::make('equipos')
     ->relationship()
     ->schema([
         Select::make('equipo_id')
             ->relationship('equipo', 'nombre')
-            ->required(),
-
-        TextInput::make('serie'),
-        TextInput::make('ubicacion'),
+,
     ]),
+    DatePicker::make('installation_date')
+    ->label('Fecha de instalación')
+    ->displayFormat('d/m/Y') // dd/mm/aaaa
+    ->native(false) // calendario más lindo
+    ->closeOnDateSelection()
+    ->nullable()
+    ->placeholder('Seleccionar fecha'),
 
         TextInput::make('contacto')
             ->label('Contacto')

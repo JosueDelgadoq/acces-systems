@@ -35,7 +35,9 @@ class CheckDueDatesJob implements ShouldQueue
         }
 
         // 2. Verificar conservaciones con servicio próximo
-        $conservations = Conservation::where('next_service_date', $today)->get();
+        $conservations = Conservation::schedulable()
+            ->whereDate('next_service_date', $today)
+            ->get();
 
         foreach ($conservations as $conservation) {
             // Crear ticket de servicio automáticamente

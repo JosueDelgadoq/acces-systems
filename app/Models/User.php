@@ -2,32 +2,40 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Traits\HasRoles;
+use App\Models\ServiceVisit;
+use Laravel\Sanctum\HasApiTokens;
+use App\Models\TechnicianLocation;
 
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
+    use HasApiTokens;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var list<string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
+        'last_lat',
+        'last_lng',
+        'last_seen_at',
+        'tracking_enabled',
+        'technician_status',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
@@ -35,66 +43,77 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
+            'tracking_enabled' => 'boolean',
+            'last_lat' => 'float',
+            'last_lng' => 'float',
         ];
     }
 
-    /**
-     * Determine if the user can access the Filament panel.
-     */
+    protected static function booted(): void
+    {
+        Gate::before(function ($user) {
+            if ($user->hasRole('admin')) {
+                return true;
+            }
+
+            return null;
+        });
+    }
+
+    public function tecnico()
+    {
+        return $this->hasOne(Tecnico::class);
+    }
+
+   public function technicianLocations()
+{
+    return $this->hasMany(\App\Models\TechnicianLocation::class);
+}
+
+    public function latestTechnicianLocation(): HasOne
+    {
+        return $this->hasOne(TechnicianLocation::class)->latestOfMany('tracked_at');
+    }
+
+    public function serviceVisits(): HasMany
+    {
+        return $this->hasMany(ServiceVisit::class, 'technician_id');
+    }
+
+    public function activeServiceVisit(): HasOne
+    {
+        return $this->hasOne(ServiceVisit::class, 'technician_id')
+            ->active()
+            ->latestOfMany();
+    }
+
+    public function serviceVisitEvents(): HasMany
+    {
+        return $this->hasMany(ServiceVisitEvent::class);
+    }
+
+    public function productoUnidadAssignments(): HasMany
+    {
+        return $this->hasMany(ProductoUnidadAssignment::class, 'technician_id');
+    }
+
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        // Temporarily allow all users for testing
-        return true;
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
+        return $this->roles()->exists() || $this->permissions()->exists();
     }
 
-public function isAdmin(): bool
-{
-    return $this->role === 'admin';
-}
-
-public function isTecnico(): bool
-{
-    return $this->role === 'tecnico';
-}
-
-public function isManager(): bool
-{
-    return $this->role === 'Manager';
-}
-    /**
-     * Get the role label in Spanish
-     */
-    public function getRoleLabelAttribute(): string
+    public function canAccess(string $permission): bool
     {
-        return match($this->role) {
-            'admin' => 'Administrador',
-            'tecnico' => 'Técnico',
-            'Manager' => 'Postventa',
-            default => 'Sin rol',
-        };
+        return filled($permission) && $this->can($permission);
     }
-
-    /**
-     * Role constants
-     */
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_TECNICO = 'tecnico';
-
-    public const ROLE_MANAGER = 'Manager';
-
-public const ROLES = [
-    'admin' => 'Administrador',
-    'tecnico' => 'Técnico',
-    'Manager' => 'Postventa',
-];
 }

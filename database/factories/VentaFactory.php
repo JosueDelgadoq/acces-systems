@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Venta;
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Venta;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class VentaFactory extends Factory
@@ -13,7 +13,9 @@ class VentaFactory extends Factory
 
     public function definition(): array
     {
-        $commercial = User::where('role', 'commercial')->first() ?? User::factory()->create(['role' => 'commercial']);
+        $commercial = User::role('comercial')->first() ?? tap(User::factory()->create(), function (User $user): void {
+            $user->assignRole('comercial');
+        });
         $lead = Lead::factory()->create();
 
         return [
@@ -26,4 +28,3 @@ class VentaFactory extends Factory
         ];
     }
 }
-

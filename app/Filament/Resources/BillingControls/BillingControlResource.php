@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BillingControls;
 
+use App\Filament\Concerns\HasPermissionControlledResource;
 use App\Filament\Resources\BillingControls\Pages\CreateBillingControl;
 use App\Filament\Resources\BillingControls\Pages\EditBillingControl;
 use App\Filament\Resources\BillingControls\Pages\ListBillingControls;
@@ -9,29 +10,41 @@ use App\Filament\Resources\BillingControls\Schemas\BillingControlForm;
 use App\Filament\Resources\BillingControls\Tables\BillingControlsTable;
 use App\Models\BillingControl;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class BillingControlResource extends Resource
 {
+    use HasPermissionControlledResource;
+
     protected static ?string $model = BillingControl::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
-    protected static ?string $navigationLabel = 'Facturación';
+    protected static ?string $navigationLabel = 'Facturacion';
 
-    protected static ?string $modelLabel = 'Control de Facturación';
+    protected static ?string $modelLabel = 'Control de facturacion';
 
-    protected static ?string $pluralModelLabel = 'Control de Facturación';
+    protected static ?string $pluralModelLabel = 'Controles de facturacion';
 
     protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'service_description';
 
-    protected static string|UnitEnum|null $navigationGroup = 'BLOQUE C - Control';
+    protected static string | UnitEnum | null $navigationGroup = 'BLOQUE C - Control';
+
+    protected static ?string $navigationPermission = 'billing_control.view';
+
+    protected static ?string $viewAnyPermission = 'billing_control.view';
+
+    protected static ?string $createPermission = 'billing_control.create';
+
+    protected static ?string $updatePermission = 'billing_control.update';
+
+    protected static ?string $deletePermission = 'billing_control.delete';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,9 +58,7 @@ class BillingControlResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -59,4 +70,3 @@ class BillingControlResource extends Resource
         ];
     }
 }
-

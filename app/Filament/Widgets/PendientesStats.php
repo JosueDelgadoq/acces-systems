@@ -8,45 +8,47 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class PendientesStats extends BaseWidget
 {
+    protected int | string | array $columnSpan = 4;
+
+    protected ?string $extraAttributes = 'p-2';
+
     protected function getStats(): array
     {
-        return [
-
-            // 🔴 VENCIDOS
-            Stat::make('Vencidos', Pendiente::where('status', '!=', 'completed')
-                ->where('due_date', '<', now())
-                ->count()
+        $summary = Pendiente::query()
+            ->selectRaw(
+                "COUNT(CASE WHEN status != ? AND due_date < ? THEN 1 END) as overdue_count,
+                COUNT(CASE WHEN status = ? THEN 1 END) as pending_count,
+                COUNT(CASE WHEN priority = ? AND status != ? THEN 1 END) as high_priority_count,
+                COUNT(CASE WHEN user_id = ? AND status != ? THEN 1 END) as my_pending_count",
+                [
+                    Pendiente::STATUS_COMPLETED,
+                    now(),
+                    Pendiente::STATUS_PENDING,
+                    'alta',
+                    Pendiente::STATUS_COMPLETED,
+                    auth()->id(),
+                    Pendiente::STATUS_COMPLETED,
+                ]
             )
-                ->description('Requieren atención urgente')
+            ->first();
+
+        return [
+            Stat::make('Vencidos', (int) ($summary->overdue_count ?? 0))
+                ->description('Requieren atencion urgente')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->color('danger'),
-
-            // ⚠️ PENDIENTES ACTIVOS
-            Stat::make('Pendientes', Pendiente::where('status', 'pending')->count())
+            Stat::make('Pendientes', (int) ($summary->pending_count ?? 0))
                 ->description('Sin comenzar')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->color('gray'),
-
-            // 🔥 PRIORIDAD ALTA
-            Stat::make('Alta prioridad', Pendiente::where('priority', 'alta')
-                ->where('status', '!=', 'completed')
-                ->count()
-            )
+            Stat::make('Alta prioridad', (int) ($summary->high_priority_count ?? 0))
                 ->description('Importantes')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->color('warning'),
-
-            // 👤 MIS PENDIENTES
-            Stat::make('Mis pendientes', Pendiente::where('user_id', auth()->id())
-                ->where('status', '!=', 'completed')
-                ->count()
-                
-            )
-                ->description('Asignados a mí')
+            Stat::make('Mis pendientes', (int) ($summary->my_pending_count ?? 0))
+                ->description('Asignados a mi')
                 ->icon('heroicon-o-exclamation-triangle')
                 ->color('info'),
-                
-
         ];
     }
 }

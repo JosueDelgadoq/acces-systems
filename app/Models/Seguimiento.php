@@ -10,6 +10,24 @@ class Seguimiento extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDIENTE = 'pendiente';
+    public const STATUS_COMPLETADO = 'completado';
+    public const STATUS_CANCELADO = 'cancelado';
+
+    public const STATUS_OPTIONS = [
+        self::STATUS_PENDIENTE => 'Pendiente',
+        self::STATUS_COMPLETADO => 'Completado',
+        self::STATUS_CANCELADO => 'Cancelado',
+    ];
+
+    public const MEDIO_CONTACTO_OPTIONS = [
+        'whatsapp' => 'WhatsApp',
+        'llamada_anura_ip' => 'Llamada',
+        'mail' => 'Mail',
+        'visita' => 'Visita',
+        'videollamada' => 'Videollamada',
+    ];
+
     protected $fillable = [
         'lead_id',
         'fecha_contacto',
@@ -18,6 +36,7 @@ class Seguimiento extends Model
         'resultado',
         'proxima_accion',
         'fecha_proxima_accion',
+        'estado',
         'observaciones',
     ];
 
@@ -34,6 +53,16 @@ class Seguimiento extends Model
     public function comercial(): BelongsTo
     {
         return $this->belongsTo(User::class, 'comercial_id');
+    }
+
+    public static function getStatusOptions(): array
+    {
+        return self::STATUS_OPTIONS;
+    }
+
+    public static function getMedioContactoOptions(): array
+    {
+        return self::MEDIO_CONTACTO_OPTIONS;
     }
 }
 

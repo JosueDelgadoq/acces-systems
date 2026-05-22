@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Habilitation extends Model
 {
@@ -24,9 +26,14 @@ class Habilitation extends Model
         'proxima_gestion' => 'date',
     ];
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function samuEvents(): HasMany
+    {
+        return $this->hasMany(SamuEvent::class);
     }
 }
 
